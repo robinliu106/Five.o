@@ -21,7 +21,9 @@ const MapContainer = (props) => {
     const [selectedPlace, setSelectedPlace] = useState();
     const [activeMarker, setActiveMarker] = useState();
     const [showInfoWindow, setShowInfoWindow] = useState(false);
-    const [selectedEvent, setSelectedEvent] = useState();
+
+    const [incidentDescription, setIncidentDescription] = useState();
+    const [incidentDate, setIncidentDate] = useState();
 
     const getCrimeRecords = () => {
         axios
@@ -51,13 +53,18 @@ const MapContainer = (props) => {
         setSelectedPlace(props);
         setShowInfoWindow(!showInfoWindow);
         setActiveMarker(marker);
-        setSelectedEvent(props.event);
+
+        setIncidentDescription(props.incidentDescription);
+        setIncidentDate(props.incidentDate);
+        console.log(props.incidentDate);
     };
 
     const mapClicked = () => {
         setShowInfoWindow(false);
         setActiveMarker(null);
-        setSelectedEvent(null);
+
+        setIncidentDescription(null);
+        setIncidentDate(null);
     };
 
     return (
@@ -117,13 +124,15 @@ const MapContainer = (props) => {
                             position={crimeLocation}
                             key={incident.INCIDENT_NUMBER}
                             onClick={onMarkerClick}
-                            event={incident.OFFENSE_DESCRIPTION}
+                            incidentDescription={incident.OFFENSE_DESCRIPTION}
+                            incidentDate={incident.OCURRED_ON_DATE}
                         />
                     );
                 })}
                 <InfoWindow marker={activeMarker} visible={showInfoWindow}>
                     <div>
-                        <h1>{selectedEvent}</h1>
+                        <h1>{incidentDescription}</h1>
+                        <h3>{incidentDate}</h3>
                     </div>
                 </InfoWindow>
             </Map>
