@@ -7,7 +7,9 @@ import {
     Circle,
     SearchBox,
 } from "google-maps-react";
+
 import moment from "moment";
+import { getCenterOfBounds } from "geolib";
 
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -24,7 +26,7 @@ const mapStyles = {
 };
 
 const MapContainer = (props) => {
-    const [coords, setCoords] = useState([]);
+    const [coords, setCoords] = useState({});
     const [crimeRecords, setCrimeRecords] = useState([]);
     const [selectedPlace, setSelectedPlace] = useState();
     const [activeMarker, setActiveMarker] = useState();
@@ -33,7 +35,7 @@ const MapContainer = (props) => {
     const [incidentDescription, setIncidentDescription] = useState();
     const [incidentDate, setIncidentDate] = useState();
     const [incidentStreet, setIncidentStreet] = useState();
-    const [center, setCenter] = useState({});
+    const [incidentLocation, setIncidentLocation] = useState({});
 
     const [calendarDate, setCalendarDate] = useState();
 
@@ -51,24 +53,48 @@ const MapContainer = (props) => {
             const records = res.data.result.records;
             console.log(records);
             setCrimeRecords(records);
+
+            getCurrentCenter(records);
+        });
+    };
+
+    const getCurrentCenter = (records) => {
+        // console.log("get", records);
+        const locations = [];
+        records.map((incident) => {
+            const parseLocation = incident.Location.replace(/[()]/g, "").split(
+                ", "
+            );
+
+            const crimeLocation = {
+                latitude: parseFloat(parseLocation[0]),
+                longitude: parseFloat(parseLocation[1]),
+            };
+            if (crimeLocation.latitude !== 0 || crimeLocation.longitude !== 0) {
+                locations.push(crimeLocation);
+            }
+        });
+
+        console.log("locations", locations);
+
+        const centerLocation = getCenterOfBounds(locations);
+
+        setCoords({
+            latitude: centerLocation.latitude,
+            longitude: centerLocation.longitude,
         });
     };
 
     useEffect(() => {
         getCrimeRecords();
+        console.log(coords);
     }, [calendarDate]);
-
-    const getCurrentLocation = () => {
-        navigator.geolocation.getCurrentPosition((position) => {
-            setCoords([position.coords.latitude, position.coords.longitude]);
-        });
-    };
 
     const mapClicked = () => {
         setIncidentDescription();
         setIncidentDate();
         setIncidentStreet();
-        setCenter();
+        setIncidentLocation();
     };
 
     const handleCircleClick = (props) => {
@@ -76,7 +102,7 @@ const MapContainer = (props) => {
         setIncidentDescription(props.incidentDescription);
         setIncidentDate(props.incidentDate);
         setIncidentStreet(props.incidentStreet);
-        setCenter(props.center);
+        setIncidentLocation(props.center);
     };
 
     const handleCalendarChange = (date) => {
@@ -91,9 +117,9 @@ const MapContainer = (props) => {
                     zoom={14}
                     style={mapStyles}
                     disableDefaultUI={true}
-                    initialCenter={{
-                        lat: coords[0] || 42.345095,
-                        lng: coords[1] || -71.103415,
+                    center={{
+                        lat: coords.latitude || 42.345095,
+                        lng: coords.longitude || -71.103415,
                     }}
                     onClick={mapClicked}
                     scrollwheel={false}
@@ -123,7 +149,7 @@ const MapContainer = (props) => {
                                 strokeWeight={5}
                                 fillColor="#FF0000"
                                 fillOpacity={0.8}
-                                key={incident.INCIDENT_NUMBER + 1}
+                                key={incident._id}
                                 incidentDescription={
                                     incident.OFFENSE_DESCRIPTION
                                 }
@@ -144,7 +170,7 @@ const MapContainer = (props) => {
                         incidentDescription={incidentDescription}
                         incidentDate={incidentDate}
                         incidentStreet={incidentStreet}
-                        center={center}
+                        center={incidentLocation}
                     />
                 </div>
             </div>
