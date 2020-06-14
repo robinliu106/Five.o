@@ -5,13 +5,13 @@
 }
 
 #mapBox div:first-child {
-    width: 160vh !important;
+    width: 148vh !important;
 }
 
 .sidebar {
     display: flex;
     flex-direction: column;
-    width: 20vw;
+    width: 40vh;
 }
 
 .crimeTab {

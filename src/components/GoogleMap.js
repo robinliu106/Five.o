@@ -26,11 +26,8 @@ const mapStyles = {
 };
 
 const MapContainer = (props) => {
-    const [coords, setCoords] = useState({});
+    const [mapCenter, setMapCenter] = useState({});
     const [crimeRecords, setCrimeRecords] = useState([]);
-    const [selectedPlace, setSelectedPlace] = useState();
-    const [activeMarker, setActiveMarker] = useState();
-    const [showInfoWindow, setShowInfoWindow] = useState(false);
 
     const [incidentDescription, setIncidentDescription] = useState();
     const [incidentDate, setIncidentDate] = useState();
@@ -51,11 +48,15 @@ const MapContainer = (props) => {
 
         axios.get(query).then((res) => {
             const records = res.data.result.records;
-            console.log(records);
-            setCrimeRecords(records);
+
+            const cleanRecords = records.filter((record) => {
+                return record.Lat || record.Long;
+            });
+            console.log("clean records", cleanRecords);
+            setCrimeRecords(cleanRecords);
 
             if (records.length > 0) {
-                getCurrentCenter(records);
+                getCurrentCenter(cleanRecords);
             }
         });
     };
@@ -64,24 +65,19 @@ const MapContainer = (props) => {
         // console.log("get", records);
         const locations = [];
         records.map((incident) => {
-            const parseLocation = incident.Location.replace(/[()]/g, "").split(
-                ", "
-            );
-
             const crimeLocation = {
-                latitude: parseFloat(parseLocation[0]),
-                longitude: parseFloat(parseLocation[1]),
+                latitude: parseFloat(incident.Lat),
+                longitude: parseFloat(incident.Long),
             };
-            if (crimeLocation.latitude !== 0 || crimeLocation.longitude !== 0) {
-                locations.push(crimeLocation);
-            }
+
+            locations.push(crimeLocation);
         });
 
         console.log("locations", locations);
 
         const centerLocation = getCenterOfBounds(locations);
 
-        setCoords({
+        setMapCenter({
             latitude: centerLocation.latitude,
             longitude: centerLocation.longitude,
         });
@@ -89,7 +85,7 @@ const MapContainer = (props) => {
 
     useEffect(() => {
         getCrimeRecords();
-        console.log(coords);
+        console.log(mapCenter);
     }, [calendarDate]);
 
     const resetSidebar = () => {
@@ -125,21 +121,21 @@ const MapContainer = (props) => {
                     style={mapStyles}
                     disableDefaultUI={true}
                     center={{
-                        lat: coords.latitude || 42.345095,
-                        lng: coords.longitude || -71.103415,
+                        lat: mapCenter.latitude || 42.345095,
+                        lng: mapCenter.longitude || -71.103415,
                     }}
                     onClick={mapClicked}
                     scrollwheel={false}
                 >
                     {crimeRecords.map((incident) => {
-                        const parseLocation = incident.Location.replace(
-                            /[()]/g,
-                            ""
-                        ).split(", ");
+                        // const parseLocation = incident.Location.replace(
+                        //     /[()]/g,
+                        //     ""
+                        // ).split(", ");
 
                         const crimeLocation = {
-                            lat: parseFloat(parseLocation[0]),
-                            lng: parseFloat(parseLocation[1]),
+                            lat: parseFloat(incident.Lat),
+                            lng: parseFloat(incident.Long),
                         };
 
                         // console.log(crimeLocation.lat, crimeLocation.lng);
