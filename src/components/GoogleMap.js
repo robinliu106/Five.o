@@ -12,9 +12,9 @@ import axios from "axios";
 import CrimeTab from "./CrimeTab";
 import "../Map.css";
 const mapStyles = {
-    width: "80%",
-    height: "90%",
-    position: "relative",
+    width: "100%",
+    height: "100%",
+    // position: "relative",
 };
 
 const MapContainer = (props) => {
@@ -26,6 +26,8 @@ const MapContainer = (props) => {
 
     const [incidentDescription, setIncidentDescription] = useState();
     const [incidentDate, setIncidentDate] = useState();
+    const [incidentStreet, setIncidentStreet] = useState();
+    const [center, setCenter] = useState({});
 
     const getCrimeRecords = () => {
         axios
@@ -55,6 +57,8 @@ const MapContainer = (props) => {
         console.log("circle clicked");
         setIncidentDescription(props.incidentDescription);
         setIncidentDate(props.incidentDate);
+        setIncidentStreet(props.incidentStreet);
+        setCenter(props.center);
     };
 
     return (
@@ -64,6 +68,7 @@ const MapContainer = (props) => {
                     google={props.google}
                     zoom={14}
                     style={mapStyles}
+                    disableDefaultUI={true}
                     initialCenter={{
                         lat: coords[0] || 42.345095,
                         lng: coords[1] || -71.103415,
@@ -100,6 +105,7 @@ const MapContainer = (props) => {
                                     incident.OFFENSE_DESCRIPTION
                                 }
                                 incidentDate={incident.OCCURRED_ON_DATE}
+                                incidentStreet={incident.STREET}
                             />
                         );
                     })}
@@ -109,6 +115,8 @@ const MapContainer = (props) => {
                 <CrimeTab
                     incidentDescription={incidentDescription}
                     incidentDate={incidentDate}
+                    incidentStreet={incidentStreet}
+                    center={center}
                 />
             </div>
         </div>
@@ -118,51 +126,3 @@ const MapContainer = (props) => {
 export default GoogleApiWrapper({
     apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
 })(MapContainer);
-
-/*
-<Map
-                    google={props.google}
-                    zoom={14}
-                    style={mapStyles}
-                    initialCenter={{
-                        lat: coords[0] || 42.345095,
-                        lng: coords[1] || -71.103415,
-                    }}
-                    onClick={mapClicked}
-                >
-                    {crimeRecords.map((incident) => {
-                        const parseLocation = incident.Location.replace(
-                            /[()]/g,
-                            ""
-                        ).split(", ");
-
-                        const crimeLocation = {
-                            lat: parseFloat(parseLocation[0]),
-                            lng: parseFloat(parseLocation[1]),
-                        };
-
-                        // console.log(crimeLocation.lat, crimeLocation.lng);
-
-                        return (
-                            <Circle
-                                radius={100}
-                                center={crimeLocation}
-                                onMouseover={() => console.log("mouseover")}
-                                onClick={handleCircleClick}
-                                onMouseout={() => console.log("mouseout")}
-                                strokeColor="transparent"
-                                strokeOpacity={0}
-                                strokeWeight={5}
-                                fillColor="#FF0000"
-                                fillOpacity={0.8}
-                                key={incident.INCIDENT_NUMBER + 1}
-                                incidentDescription={
-                                    incident.OFFENSE_DESCRIPTION
-                                }
-                                incidentDate={incident.OCCURRED_ON_DATE}
-                            />
-                        );
-                    })}
-                </Map>
-           
-*/

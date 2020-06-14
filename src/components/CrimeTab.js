@@ -1,14 +1,24 @@
 import React, { useState, useEffect } from "react";
-console.log("in crime tab");
+import moment from "moment";
+
 const CrimeTab = (props) => {
     return (
         <div>
             <h1>CRIME TAB</h1>
-            <h1>
-                {console.log(props.incidentDescription)}
-                {props.incidentDescription}
-            </h1>
-            <h3>{props.incidentDate}</h3>
+            <h2>{props.incidentDescription}</h2>
+            <h4>
+                {moment(props.incidentDate).format(
+                    "dddd, MMMM Do YYYY, h:mm a"
+                )}
+            </h4>
+            <h4>
+                <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${props.center.lat},${props.center.lng}`}
+                    target="_blank"
+                >
+                    {props.incidentStreet}
+                </a>
+            </h4>
         </div>
     );
 };
