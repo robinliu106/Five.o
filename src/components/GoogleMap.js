@@ -170,7 +170,10 @@ const MapContainer = (props) => {
 
             <div className="sidebar">
                 <div>
-                    <Calendar onChange={handleCalendarChange} />
+                    <Calendar
+                        onChange={handleCalendarChange}
+                        maxDate={new Date()}
+                    />
                 </div>
                 <div className="crimeTab">
                     <CrimeTab
