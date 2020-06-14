@@ -46,7 +46,7 @@ const MapContainer = (props) => {
         if (calendarDate) {
             query += calendarDate;
         } else {
-            query += new moment().subtract(1, "days").format("YYYY-MM-DD"); //Default to yesterday's date
+            query += new moment().format("YYYY-MM-DD");
         }
 
         axios.get(query).then((res) => {
@@ -54,7 +54,9 @@ const MapContainer = (props) => {
             console.log(records);
             setCrimeRecords(records);
 
-            getCurrentCenter(records);
+            if (records.length > 0) {
+                getCurrentCenter(records);
+            }
         });
     };
 
@@ -90,11 +92,15 @@ const MapContainer = (props) => {
         console.log(coords);
     }, [calendarDate]);
 
-    const mapClicked = () => {
+    const resetSidebar = () => {
         setIncidentDescription();
         setIncidentDate();
         setIncidentStreet();
         setIncidentLocation();
+    };
+
+    const mapClicked = () => {
+        resetSidebar();
     };
 
     const handleCircleClick = (props) => {
@@ -108,6 +114,7 @@ const MapContainer = (props) => {
     const handleCalendarChange = (date) => {
         console.log(moment(date).format("YYYY-MM-DD"));
         setCalendarDate(moment(date).format("YYYY-MM-DD"));
+        resetSidebar();
     };
     return (
         <div className="main">
