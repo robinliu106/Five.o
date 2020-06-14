@@ -49,6 +49,7 @@ const MapContainer = (props) => {
 
         axios.get(query).then((res) => {
             const records = res.data.result.records;
+            console.log(records);
             setCrimeRecords(records);
         });
     };
@@ -63,7 +64,12 @@ const MapContainer = (props) => {
         });
     };
 
-    const mapClicked = () => {};
+    const mapClicked = () => {
+        setIncidentDescription();
+        setIncidentDate();
+        setIncidentStreet();
+        setCenter();
+    };
 
     const handleCircleClick = (props) => {
         console.log("circle clicked");

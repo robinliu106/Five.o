@@ -4,7 +4,9 @@ import moment from "moment";
 const CrimeTab = (props) => {
     return (
         <div>
-            <h2>{props.incidentDescription}</h2>
+            <h2>
+                {props.incidentDescription ? props.incidentDescription : ""}
+            </h2>
             <h4>
                 {props.incidentDate
                     ? moment(props.incidentDate).format(
@@ -13,12 +15,16 @@ const CrimeTab = (props) => {
                     : ""}
             </h4>
             <h4>
-                <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${props.center.lat},${props.center.lng}`}
-                    target="_blank"
-                >
-                    {props.incidentStreet}
-                </a>
+                {props.center ? (
+                    <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${props.center.lat},${props.center.lng}`}
+                        target="_blank"
+                    >
+                        {props.incidentStreet}
+                    </a>
+                ) : (
+                    ""
+                )}
             </h4>
         </div>
     );
