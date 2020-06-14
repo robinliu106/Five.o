@@ -5,14 +5,16 @@ import {
     Marker,
     InfoWindow,
     Circle,
+    SearchBox,
 } from "google-maps-react";
 import axios from "axios";
 
-import getCrimes from "./getCrimes";
-
+import CrimeTab from "./CrimeTab";
+import "../Map.css";
 const mapStyles = {
-    width: "100%",
-    height: "100%",
+    width: "80%",
+    height: "90%",
+    position: "relative",
 };
 
 const MapContainer = (props) => {
@@ -33,7 +35,6 @@ const MapContainer = (props) => {
             .then((res) => {
                 const records = res.data.result.records;
                 console.log(records);
-                // return records;
                 setCrimeRecords(records);
             });
     };
@@ -48,94 +49,68 @@ const MapContainer = (props) => {
         });
     };
 
-    const onMarkerClick = (props, marker, e) => {
-        console.log(props, marker, e);
-        setSelectedPlace(props);
-        setShowInfoWindow(!showInfoWindow);
-        setActiveMarker(marker);
+    const mapClicked = () => {};
 
+    const handleCircleClick = (props) => {
+        console.log("circle clicked");
         setIncidentDescription(props.incidentDescription);
         setIncidentDate(props.incidentDate);
-        console.log(props.incidentDate);
-    };
-
-    const mapClicked = () => {
-        setShowInfoWindow(false);
-        setActiveMarker(null);
-
-        setIncidentDescription(null);
-        setIncidentDate(null);
     };
 
     return (
-        <div>
-            <Map
-                google={props.google}
-                zoom={14}
-                style={mapStyles}
-                initialCenter={{
-                    lat: coords[0] || 42.3975958,
-                    lng: coords[1] || -71.1567227,
-                }}
-                onClick={mapClicked}
-            >
-                {crimeRecords.map((incident) => {
-                    const parseLocation = incident.Location.replace(
-                        /[()]/g,
-                        ""
-                    ).split(", ");
+        <div className="main">
+            <div id="mapBox">
+                <Map
+                    google={props.google}
+                    zoom={14}
+                    style={mapStyles}
+                    initialCenter={{
+                        lat: coords[0] || 42.345095,
+                        lng: coords[1] || -71.103415,
+                    }}
+                    onClick={mapClicked}
+                >
+                    {crimeRecords.map((incident) => {
+                        const parseLocation = incident.Location.replace(
+                            /[()]/g,
+                            ""
+                        ).split(", ");
 
-                    const crimeLocation = {
-                        lat: parseFloat(parseLocation[0]),
-                        lng: parseFloat(parseLocation[1]),
-                    };
+                        const crimeLocation = {
+                            lat: parseFloat(parseLocation[0]),
+                            lng: parseFloat(parseLocation[1]),
+                        };
 
-                    // console.log(crimeLocation.lat, crimeLocation.lng);
+                        // console.log(crimeLocation.lat, crimeLocation.lng);
 
-                    return (
-                        <Circle
-                            radius={100}
-                            center={crimeLocation}
-                            onMouseover={() => console.log("mouseover")}
-                            onClick={() => console.log("click")}
-                            onMouseout={() => console.log("mouseout")}
-                            strokeColor="transparent"
-                            strokeOpacity={0}
-                            strokeWeight={5}
-                            fillColor="#FF0000"
-                            fillOpacity={0.8}
-                            key={incident.INCIDENT_NUMBER + 1}
-                        />
-                    );
-                })}
-                {crimeRecords.map((incident) => {
-                    const parseLocation = incident.Location.replace(
-                        /[()]/g,
-                        ""
-                    ).split(", ");
-
-                    const crimeLocation = {
-                        lat: parseFloat(parseLocation[0]),
-                        lng: parseFloat(parseLocation[1]),
-                    };
-
-                    return (
-                        <Marker
-                            position={crimeLocation}
-                            key={incident.INCIDENT_NUMBER}
-                            onClick={onMarkerClick}
-                            incidentDescription={incident.OFFENSE_DESCRIPTION}
-                            incidentDate={incident.OCURRED_ON_DATE}
-                        />
-                    );
-                })}
-                <InfoWindow marker={activeMarker} visible={showInfoWindow}>
-                    <div>
-                        <h1>{incidentDescription}</h1>
-                        <h3>{incidentDate}</h3>
-                    </div>
-                </InfoWindow>
-            </Map>
+                        return (
+                            <Circle
+                                radius={100}
+                                center={crimeLocation}
+                                onMouseover={() => console.log("mouseover")}
+                                onClick={handleCircleClick}
+                                onMouseout={() => console.log("mouseout")}
+                                strokeColor="transparent"
+                                strokeOpacity={0}
+                                strokeWeight={5}
+                                fillColor="#FF0000"
+                                fillOpacity={0.8}
+                                key={incident.INCIDENT_NUMBER + 1}
+                                incidentDescription={
+                                    incident.OFFENSE_DESCRIPTION
+                                }
+                                incidentDate={incident.OCCURRED_ON_DATE}
+                            />
+                        );
+                    })}
+                </Map>
+            </div>
+            <div className="crimeTab">
+                <CrimeTab
+                    incidentDescription={incidentDescription}
+                    incidentDate={incidentDate}
+                />
+            </div>
         </div>
     );
 };
@@ -143,3 +118,51 @@ const MapContainer = (props) => {
 export default GoogleApiWrapper({
     apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
 })(MapContainer);
+
+/*
+<Map
+                    google={props.google}
+                    zoom={14}
+                    style={mapStyles}
+                    initialCenter={{
+                        lat: coords[0] || 42.345095,
+                        lng: coords[1] || -71.103415,
+                    }}
+                    onClick={mapClicked}
+                >
+                    {crimeRecords.map((incident) => {
+                        const parseLocation = incident.Location.replace(
+                            /[()]/g,
+                            ""
+                        ).split(", ");
+
+                        const crimeLocation = {
+                            lat: parseFloat(parseLocation[0]),
+                            lng: parseFloat(parseLocation[1]),
+                        };
+
+                        // console.log(crimeLocation.lat, crimeLocation.lng);
+
+                        return (
+                            <Circle
+                                radius={100}
+                                center={crimeLocation}
+                                onMouseover={() => console.log("mouseover")}
+                                onClick={handleCircleClick}
+                                onMouseout={() => console.log("mouseout")}
+                                strokeColor="transparent"
+                                strokeOpacity={0}
+                                strokeWeight={5}
+                                fillColor="#FF0000"
+                                fillOpacity={0.8}
+                                key={incident.INCIDENT_NUMBER + 1}
+                                incidentDescription={
+                                    incident.OFFENSE_DESCRIPTION
+                                }
+                                incidentDate={incident.OCCURRED_ON_DATE}
+                            />
+                        );
+                    })}
+                </Map>
+           
+*/
