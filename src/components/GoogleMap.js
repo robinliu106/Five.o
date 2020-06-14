@@ -7,10 +7,16 @@ import {
     Circle,
     SearchBox,
 } from "google-maps-react";
+import moment from "moment";
+
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+
 import axios from "axios";
 
 import CrimeTab from "./CrimeTab";
 import "../Map.css";
+
 const mapStyles = {
     width: "100%",
     height: "100%",
@@ -29,21 +35,27 @@ const MapContainer = (props) => {
     const [incidentStreet, setIncidentStreet] = useState();
     const [center, setCenter] = useState({});
 
+    const [calendarDate, setCalendarDate] = useState();
+
     const getCrimeRecords = () => {
-        axios
-            .get(
-                "https://data.boston.gov/api/3/action/datastore_search?resource_id=12cb3883-56f5-47de-afa5-3b1cf61b257b&q='2020'"
-            )
-            .then((res) => {
-                const records = res.data.result.records;
-                console.log(records);
-                setCrimeRecords(records);
-            });
+        let query =
+            "https://data.boston.gov/api/3/action/datastore_search?resource_id=12cb3883-56f5-47de-afa5-3b1cf61b257b&q=";
+
+        if (calendarDate) {
+            query += calendarDate;
+        } else {
+            query += new moment().subtract(1, "days").format("YYYY-MM-DD"); //Default to yesterday's date
+        }
+
+        axios.get(query).then((res) => {
+            const records = res.data.result.records;
+            setCrimeRecords(records);
+        });
     };
 
     useEffect(() => {
         getCrimeRecords();
-    }, []);
+    }, [calendarDate]);
 
     const getCurrentLocation = () => {
         navigator.geolocation.getCurrentPosition((position) => {
@@ -61,6 +73,10 @@ const MapContainer = (props) => {
         setCenter(props.center);
     };
 
+    const handleCalendarChange = (date) => {
+        console.log(moment(date).format("YYYY-MM-DD"));
+        setCalendarDate(moment(date).format("YYYY-MM-DD"));
+    };
     return (
         <div className="main">
             <div id="mapBox">
@@ -74,6 +90,7 @@ const MapContainer = (props) => {
                         lng: coords[1] || -71.103415,
                     }}
                     onClick={mapClicked}
+                    scrollwheel={false}
                 >
                     {crimeRecords.map((incident) => {
                         const parseLocation = incident.Location.replace(
@@ -111,13 +128,19 @@ const MapContainer = (props) => {
                     })}
                 </Map>
             </div>
-            <div className="crimeTab">
-                <CrimeTab
-                    incidentDescription={incidentDescription}
-                    incidentDate={incidentDate}
-                    incidentStreet={incidentStreet}
-                    center={center}
-                />
+
+            <div className="sidebar">
+                <div>
+                    <Calendar onChange={handleCalendarChange} />
+                </div>
+                <div className="crimeTab">
+                    <CrimeTab
+                        incidentDescription={incidentDescription}
+                        incidentDate={incidentDate}
+                        incidentStreet={incidentStreet}
+                        center={center}
+                    />
+                </div>
             </div>
         </div>
     );

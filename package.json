@@ -11,11 +11,14 @@
         "google-maps-react": "^2.0.6",
         "moment": "^2.26.0",
         "react": "^16.13.1",
+        "react-calendar": "^3.1.0",
+        "react-dates": "^21.8.0",
         "react-dom": "^16.13.1",
         "react-redux": "^7.2.0",
         "react-scripts": "3.4.1",
         "redux": "^4.0.5",
-        "redux-thunk": "^2.3.0"
+        "redux-thunk": "^2.3.0",
+        "simple-react-calendar": "^2.2.1"
     },
     "scripts": {
         "start": "env-cmd -f .env.development.local react-scripts start",

@@ -4,12 +4,13 @@ import moment from "moment";
 const CrimeTab = (props) => {
     return (
         <div>
-            <h1>CRIME TAB</h1>
             <h2>{props.incidentDescription}</h2>
             <h4>
-                {moment(props.incidentDate).format(
-                    "dddd, MMMM Do YYYY, h:mm a"
-                )}
+                {props.incidentDate
+                    ? moment(props.incidentDate).format(
+                          "dddd, MMMM Do YYYY, h:mm a"
+                      )
+                    : ""}
             </h4>
             <h4>
                 <a
