@@ -1,17 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { Map, GoogleApiWrapper, Marker, Circle } from "google-maps-react";
+import {
+    Map,
+    GoogleApiWrapper,
+    Marker,
+    InfoWindow,
+    Circle,
+} from "google-maps-react";
 import axios from "axios";
 
 import getCrimes from "./getCrimes";
 
 const mapStyles = {
-    width: "50%",
-    height: "50%",
+    width: "100%",
+    height: "100%",
 };
 
 const MapContainer = (props) => {
     const [coords, setCoords] = useState([]);
     const [crimeRecords, setCrimeRecords] = useState([]);
+    const [selectedPlace, setSelectedPlace] = useState();
+    const [activeMarker, setActiveMarker] = useState();
+    const [showInfoWindow, setShowInfoWindow] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState();
 
     const getCrimeRecords = () => {
         axios
@@ -35,6 +45,21 @@ const MapContainer = (props) => {
             setCoords([position.coords.latitude, position.coords.longitude]);
         });
     };
+
+    const onMarkerClick = (props, marker, e) => {
+        console.log(props, marker, e);
+        setSelectedPlace(props);
+        setShowInfoWindow(!showInfoWindow);
+        setActiveMarker(marker);
+        setSelectedEvent(props.event);
+    };
+
+    const mapClicked = () => {
+        setShowInfoWindow(false);
+        setActiveMarker(null);
+        setSelectedEvent(null);
+    };
+
     return (
         <div>
             <Map
@@ -45,6 +70,7 @@ const MapContainer = (props) => {
                     lat: coords[0] || 42.3975958,
                     lng: coords[1] || -71.1567227,
                 }}
+                onClick={mapClicked}
             >
                 {crimeRecords.map((incident) => {
                     const parseLocation = incident.Location.replace(
@@ -57,7 +83,7 @@ const MapContainer = (props) => {
                         lng: parseFloat(parseLocation[1]),
                     };
 
-                    console.log(crimeLocation.lat, crimeLocation.lng);
+                    // console.log(crimeLocation.lat, crimeLocation.lng);
 
                     return (
                         <Circle
@@ -71,10 +97,35 @@ const MapContainer = (props) => {
                             strokeWeight={5}
                             fillColor="#FF0000"
                             fillOpacity={0.8}
-                            key={incident.INCIDENT_NUMBER}
+                            key={incident.INCIDENT_NUMBER + 1}
                         />
                     );
                 })}
+                {crimeRecords.map((incident) => {
+                    const parseLocation = incident.Location.replace(
+                        /[()]/g,
+                        ""
+                    ).split(", ");
+
+                    const crimeLocation = {
+                        lat: parseFloat(parseLocation[0]),
+                        lng: parseFloat(parseLocation[1]),
+                    };
+
+                    return (
+                        <Marker
+                            position={crimeLocation}
+                            key={incident.INCIDENT_NUMBER}
+                            onClick={onMarkerClick}
+                            event={incident.OFFENSE_DESCRIPTION}
+                        />
+                    );
+                })}
+                <InfoWindow marker={activeMarker} visible={showInfoWindow}>
+                    <div>
+                        <h1>{selectedEvent}</h1>
+                    </div>
+                </InfoWindow>
             </Map>
         </div>
     );
