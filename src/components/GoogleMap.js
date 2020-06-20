@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
     Map,
     GoogleApiWrapper,
@@ -26,6 +26,7 @@ const mapStyles = {
 };
 
 const MapContainer = (props) => {
+    // const [mapRef, setMapRef] = useState(null);
     const [mapCenter, setMapCenter] = useState({});
     const [crimeRecords, setCrimeRecords] = useState([]);
 
@@ -35,6 +36,7 @@ const MapContainer = (props) => {
     const [incidentLocation, setIncidentLocation] = useState({});
 
     const [calendarDate, setCalendarDate] = useState();
+    const mapRef = useRef();
 
     const getCrimeRecords = () => {
         let query =
@@ -85,8 +87,8 @@ const MapContainer = (props) => {
 
     useEffect(() => {
         getCrimeRecords();
-        console.log(mapCenter);
-    }, [calendarDate]);
+        console.log("mapCenter", mapCenter);
+    }, [calendarDate]); //
 
     const resetSidebar = () => {
         setIncidentDescription();
@@ -112,10 +114,27 @@ const MapContainer = (props) => {
         setCalendarDate(moment(date).format("YYYY-MM-DD"));
         resetSidebar();
     };
+
+    const handleOnLoad = (map) => {
+        return (mapRef.current = map);
+    };
+
+    const handleCenterChanged = () => {
+        console.log("handle center changed");
+
+        if (!mapRef.current) {
+            return;
+        }
+        console.log(
+            mapRef.current.getCenter().toJSON()
+        ); /*setMapCenter(mapRef.getCenter().toJSON())*/
+    };
+
     return (
         <div className="main">
             <div id="mapBox">
                 <Map
+                    onLoad={handleOnLoad}
                     google={props.google}
                     zoom={14}
                     style={mapStyles}
@@ -126,6 +145,7 @@ const MapContainer = (props) => {
                     }}
                     onClick={mapClicked}
                     scrollwheel={false}
+                    onCenterChanged={handleCenterChanged}
                 >
                     {crimeRecords.map((incident) => {
                         // const parseLocation = incident.Location.replace(
