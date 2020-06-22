@@ -5,19 +5,21 @@ import App from "./App";
 import GoogleMap from "./components/GoogleMap";
 import * as serviceWorker from "./serviceWorker";
 
-// import { Provider } from "react-redux";
+import { Provider } from "react-redux";
 import configureStore from "./store/configureStore";
-// import setCrimes from "./components/getCrimes";
+import { incidentAction } from "./actions/incidentAction";
 
 const store = configureStore();
 
-// const jsx = (
-//     <Provider store={store}>
-//         <GoogleMap />
-//     </Provider>
-// );
+const jsx = (
+    <Provider store={store}>
+        <GoogleMap />
+    </Provider>
+);
 
-ReactDOM.render(<GoogleMap />, document.getElementById("root"));
+ReactDOM.render(jsx, document.getElementById("root"));
+
+// ReactDOM.render(<GoogleMap />, document.getElementById("root"));
 
 // store.dispatch(getCrimes()).then(() => {
 //     console.log("crimes added to store");

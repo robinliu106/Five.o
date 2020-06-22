@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
+import { connect } from "react-redux";
+
 import {
     Map,
     GoogleApiWrapper,
@@ -16,7 +18,8 @@ import "react-calendar/dist/Calendar.css";
 
 import axios from "axios";
 
-import CrimeTab from "./CrimeTab";
+import { setDate } from "../actions/dateAction";
+import CrimeTab from "./IncidentTab";
 import "../Map.css";
 
 const mapStyles = {
@@ -38,7 +41,7 @@ const MapContainer = (props) => {
     const [calendarDate, setCalendarDate] = useState();
     const mapRef = useRef();
 
-    const getCrimeRecords = () => {
+    const getCrimeRecords = (props) => {
         let query =
             "https://data.boston.gov/api/3/action/datastore_search?resource_id=12cb3883-56f5-47de-afa5-3b1cf61b257b&q=";
 
@@ -112,6 +115,7 @@ const MapContainer = (props) => {
     const handleCalendarChange = (date) => {
         console.log(moment(date).format("YYYY-MM-DD"));
         setCalendarDate(moment(date).format("YYYY-MM-DD"));
+        props.setDate(moment(date).format("YYYY-MM-DD"));
         resetSidebar();
     };
 
@@ -148,17 +152,10 @@ const MapContainer = (props) => {
                     onCenterChanged={handleCenterChanged}
                 >
                     {crimeRecords.map((incident) => {
-                        // const parseLocation = incident.Location.replace(
-                        //     /[()]/g,
-                        //     ""
-                        // ).split(", ");
-
                         const crimeLocation = {
                             lat: parseFloat(incident.Lat),
                             lng: parseFloat(incident.Long),
                         };
-
-                        // console.log(crimeLocation.lat, crimeLocation.lng);
 
                         return (
                             <Circle
@@ -204,6 +201,25 @@ const MapContainer = (props) => {
     );
 };
 
+const mapStateToProps = (state) => ({
+    date: state.date,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    setDate: (date) => dispatch(setDate(date)),
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(
+    GoogleApiWrapper({
+        apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    })(MapContainer)
+);
+
+/*
 export default GoogleApiWrapper({
     apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
 })(MapContainer);
+*/

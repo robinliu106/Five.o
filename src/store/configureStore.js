@@ -1,13 +1,15 @@
 import thunk from "redux-thunk";
 import { createStore, combineReducers, applyMiddleware, compose } from "redux";
-import crimesReducer from "../reducers/crimes";
+import incidentReducer from "../reducers/incidentReducer";
+import dateReducer from "../reducers/dateReducer";
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export default () => {
     const store = createStore(
         combineReducers({
-            crimes: crimesReducer,
+            incidents: incidentReducer,
+            date: dateReducer,
         }),
         composeEnhancers(applyMiddleware(thunk))
     );
