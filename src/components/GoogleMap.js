@@ -19,6 +19,10 @@ import "react-calendar/dist/Calendar.css";
 import axios from "axios";
 
 import { setDate } from "../actions/dateAction";
+import { setIncidents } from "../actions/incidentAction";
+
+import { getIncidents } from "../components/getIncidents";
+
 import CrimeTab from "./IncidentTab";
 import "../Map.css";
 
@@ -29,14 +33,22 @@ const mapStyles = {
 };
 
 const MapContainer = (props) => {
+    console.log("map props", props);
     // const [mapRef, setMapRef] = useState(null);
     const [mapCenter, setMapCenter] = useState({});
     const [crimeRecords, setCrimeRecords] = useState([]);
 
-    const [incidentDescription, setIncidentDescription] = useState();
-    const [incidentDate, setIncidentDate] = useState();
-    const [incidentStreet, setIncidentStreet] = useState();
-    const [incidentLocation, setIncidentLocation] = useState({});
+    // const [incidentDescription, setIncidentDescription] = useState();
+    // const [incidentDate, setIncidentDate] = useState();
+    // const [incidentStreet, setIncidentStreet] = useState();
+    // const [incidentLocation, setIncidentLocation] = useState({});
+
+    const [incidentDetails, setIncidentDetails] = useState({
+        // description: "",
+        // date: "",
+        // street: "",
+        // location: "",
+    });
 
     const [calendarDate, setCalendarDate] = useState();
     const mapRef = useRef();
@@ -90,14 +102,17 @@ const MapContainer = (props) => {
 
     useEffect(() => {
         getCrimeRecords();
-        console.log("mapCenter", mapCenter);
-    }, [calendarDate]); //
+        // getIncidents();
+        // console.log("mapCenter", mapCenter);
+        console.log("incidentDetails", incidentDetails);
+    }, [incidentDetails]); //
 
     const resetSidebar = () => {
-        setIncidentDescription();
-        setIncidentDate();
-        setIncidentStreet();
-        setIncidentLocation();
+        // setIncidentDescription();
+        // setIncidentDate();
+        // setIncidentStreet();
+        // setIncidentLocation();
+        setIncidentDetails({});
     };
 
     const mapClicked = () => {
@@ -106,16 +121,25 @@ const MapContainer = (props) => {
 
     const handleCircleClick = (props) => {
         console.log("circle clicked");
-        setIncidentDescription(props.incidentDescription);
-        setIncidentDate(props.incidentDate);
-        setIncidentStreet(props.incidentStreet);
-        setIncidentLocation(props.center);
+        // setIncidentDescription(props.incidentDescription);
+        // setIncidentDate(props.incidentDate);
+        // setIncidentStreet(props.incidentStreet);
+        // setIncidentLocation(props.center);
+
+        setIncidentDetails({
+            description: props.incidentDescription,
+            date: props.incidentDate,
+            street: props.incidentStreet,
+            location: props.center,
+        });
     };
 
     const handleCalendarChange = (date) => {
         console.log(moment(date).format("YYYY-MM-DD"));
         setCalendarDate(moment(date).format("YYYY-MM-DD"));
         props.setDate(moment(date).format("YYYY-MM-DD"));
+        //test
+        // props.setIncidents(["hi"]);
         resetSidebar();
     };
 
@@ -190,10 +214,10 @@ const MapContainer = (props) => {
                 </div>
                 <div className="crimeTab">
                     <CrimeTab
-                        incidentDescription={incidentDescription}
-                        incidentDate={incidentDate}
-                        incidentStreet={incidentStreet}
-                        center={incidentLocation}
+                        incidentDescription={incidentDetails.description}
+                        incidentDate={incidentDetails.date}
+                        incidentStreet={incidentDetails.street}
+                        center={incidentDetails.location}
                     />
                 </div>
             </div>
@@ -207,6 +231,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     setDate: (date) => dispatch(setDate(date)),
+    setIncidents: (incidents) => dispatch(setIncidents(incidents)),
 });
 
 export default connect(
