@@ -33,22 +33,10 @@ const mapStyles = {
 };
 
 const MapContainer = (props) => {
-    console.log("map props", props);
-    // const [mapRef, setMapRef] = useState(null);
     const [mapCenter, setMapCenter] = useState({});
     const [crimeRecords, setCrimeRecords] = useState([]);
 
-    // const [incidentDescription, setIncidentDescription] = useState();
-    // const [incidentDate, setIncidentDate] = useState();
-    // const [incidentStreet, setIncidentStreet] = useState();
-    // const [incidentLocation, setIncidentLocation] = useState({});
-
-    const [incidentDetails, setIncidentDetails] = useState({
-        // description: "",
-        // date: "",
-        // street: "",
-        // location: "",
-    });
+    const [incidentDetails, setIncidentDetails] = useState({});
 
     const [calendarDate, setCalendarDate] = useState();
     const mapRef = useRef();
@@ -108,10 +96,6 @@ const MapContainer = (props) => {
     }, [incidentDetails]); //
 
     const resetSidebar = () => {
-        // setIncidentDescription();
-        // setIncidentDate();
-        // setIncidentStreet();
-        // setIncidentLocation();
         setIncidentDetails({});
     };
 
@@ -121,10 +105,6 @@ const MapContainer = (props) => {
 
     const handleCircleClick = (props) => {
         console.log("circle clicked");
-        // setIncidentDescription(props.incidentDescription);
-        // setIncidentDate(props.incidentDate);
-        // setIncidentStreet(props.incidentStreet);
-        // setIncidentLocation(props.center);
 
         setIncidentDetails({
             description: props.incidentDescription,
@@ -138,8 +118,7 @@ const MapContainer = (props) => {
         console.log(moment(date).format("YYYY-MM-DD"));
         setCalendarDate(moment(date).format("YYYY-MM-DD"));
         props.setDate(moment(date).format("YYYY-MM-DD"));
-        //test
-        // props.setIncidents(["hi"]);
+
         resetSidebar();
     };
 
