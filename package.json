@@ -22,7 +22,7 @@
         "simple-react-calendar": "^2.2.1"
     },
     "scripts": {
-        "start": "react-scripts start",
+        "start": "node index.js",
         "dev": "env-cmd -f .env.development.local react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
