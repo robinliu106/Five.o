@@ -1,14 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 
-import {
-    Map,
-    GoogleApiWrapper,
-    Marker,
-    InfoWindow,
-    Circle,
-    SearchBox,
-} from "google-maps-react";
+import { Map, GoogleApiWrapper, Marker, InfoWindow, Circle, SearchBox } from "google-maps-react";
 
 import moment from "moment";
 import { getCenterOfBounds } from "geolib";
@@ -23,7 +16,7 @@ import { setIncidents } from "../actions/incidentAction";
 
 import { getIncidents } from "../components/getIncidents";
 
-import CrimeTab from "./IncidentTab";
+import CrimeTab from "./CrimeTab";
 import "../Map.css";
 
 const mapStyles = {
@@ -132,9 +125,7 @@ const MapContainer = (props) => {
         if (!mapRef.current) {
             return;
         }
-        console.log(
-            mapRef.current.getCenter().toJSON()
-        ); /*setMapCenter(mapRef.getCenter().toJSON())*/
+        console.log(mapRef.current.getCenter().toJSON()); /*setMapCenter(mapRef.getCenter().toJSON())*/
     };
 
     return (
@@ -146,13 +137,14 @@ const MapContainer = (props) => {
                     zoom={14}
                     style={mapStyles}
                     disableDefaultUI={true}
+                    draggable={false}
                     center={{
                         lat: mapCenter.latitude || 42.345095,
                         lng: mapCenter.longitude || -71.103415,
                     }}
                     onClick={mapClicked}
                     scrollwheel={false}
-                    onCenterChanged={handleCenterChanged}
+                    // onCenterChanged={handleCenterChanged}
                 >
                     {crimeRecords.map((incident) => {
                         const crimeLocation = {
@@ -170,12 +162,10 @@ const MapContainer = (props) => {
                                 strokeColor="transparent"
                                 strokeOpacity={0}
                                 strokeWeight={5}
-                                fillColor="#FF0000"
+                                fillColor="#FF4500"
                                 fillOpacity={0.8}
                                 key={incident._id}
-                                incidentDescription={
-                                    incident.OFFENSE_DESCRIPTION
-                                }
+                                incidentDescription={incident.OFFENSE_DESCRIPTION}
                                 incidentDate={incident.OCCURRED_ON_DATE}
                                 incidentStreet={incident.STREET}
                             />
@@ -186,10 +176,7 @@ const MapContainer = (props) => {
 
             <div className="sidebar">
                 <div>
-                    <Calendar
-                        onChange={handleCalendarChange}
-                        maxDate={new Date()}
-                    />
+                    <Calendar onChange={handleCalendarChange} maxDate={new Date()} />
                 </div>
                 <div className="crimeTab">
                     <CrimeTab
@@ -221,9 +208,3 @@ export default connect(
         apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     })(MapContainer)
 );
-
-/*
-export default GoogleApiWrapper({
-    apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-})(MapContainer);
-*/

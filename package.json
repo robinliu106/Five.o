@@ -1,8 +1,9 @@
 {
-    "name": "runnur",
+    "name": "five-o",
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@fortawesome/fontawesome-free": "^5.15.2",
         "@testing-library/jest-dom": "^4.2.4",
         "@testing-library/react": "^9.3.2",
         "@testing-library/user-event": "^7.1.2",
@@ -22,11 +23,14 @@
         "simple-react-calendar": "^2.2.1"
     },
     "scripts": {
-        "start": "node index.js",
+        "start": "react-scripts start",
         "dev": "env-cmd -f .env.development.local react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
+    },
+    "engines": {
+        "node": "15.6.0"
     },
     "eslintConfig": {
         "extends": "react-app"
