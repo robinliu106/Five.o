@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/Five.o/static/css/main.ff6a71c5.chunk.css",
+    "main.js": "/Five.o/static/js/main.050a0b37.chunk.js",
+    "main.js.map": "/Five.o/static/js/main.050a0b37.chunk.js.map",
+    "runtime-main.js": "/Five.o/static/js/runtime-main.bb8199ae.js",
+    "runtime-main.js.map": "/Five.o/static/js/runtime-main.bb8199ae.js.map",
+    "static/css/2.8f4750d0.chunk.css": "/Five.o/static/css/2.8f4750d0.chunk.css",
+    "static/js/2.9730292e.chunk.js": "/Five.o/static/js/2.9730292e.chunk.js",
+    "static/js/2.9730292e.chunk.js.map": "/Five.o/static/js/2.9730292e.chunk.js.map",
+    "index.html": "/Five.o/index.html",
+    "precache-manifest.ef67e12dfb110bea9fcfd458d82ef9ff.js": "/Five.o/precache-manifest.ef67e12dfb110bea9fcfd458d82ef9ff.js",
+    "service-worker.js": "/Five.o/service-worker.js",
+    "static/css/2.8f4750d0.chunk.css.map": "/Five.o/static/css/2.8f4750d0.chunk.css.map",
+    "static/css/main.ff6a71c5.chunk.css.map": "/Five.o/static/css/main.ff6a71c5.chunk.css.map",
+    "static/js/2.9730292e.chunk.js.LICENSE.txt": "/Five.o/static/js/2.9730292e.chunk.js.LICENSE.txt",
+    "static/media/all.min.css": "/Five.o/static/media/fa-solid-900.9ae050d1.woff2"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.bb8199ae.js",
+    "static/css/2.8f4750d0.chunk.css",
+    "static/js/2.9730292e.chunk.js",
+    "static/css/main.ff6a71c5.chunk.css",
+    "static/js/main.050a0b37.chunk.js"
+  ]
+}
